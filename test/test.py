@@ -1,40 +1,39 @@
-# SPDX-FileCopyrightText: © 2024 Tiny Tapeout
-# SPDX-License-Identifier: Apache-2.0
-
+"""RTL and gate-level Cocotb regression for the Tiny Tapeout AND gate.
+Works with the official template's Cocotb 2.1.0 and Icarus Verilog.
+"""
 import cocotb
-from cocotb.clock import Clock
-from cocotb.triggers import ClockCycles
+from cocotb.triggers import Timer
 
 
 @cocotb.test()
 async def test_project(dut):
-    dut._log.info("Start")
-
-    # Set the clock period to 10 us (100 KHz)
-    clock = Clock(dut.clk, 10, unit="us")
-    cocotb.start_soon(clock.start())
-
-    # Reset
-    dut._log.info("Reset")
-    dut.ena.value = 1
-    dut.ui_in.value = 0
-    dut.uio_in.value = 0
-    dut.rst_n.value = 0
-    await ClockCycles(dut.clk, 10)
+    """Test basic truth table, all 256 input-bus values, and fixed outputs."""
+    dut.clk.value = 0
     dut.rst_n.value = 1
+    dut.ena.value = 1
+    dut.uio_in.value = 0
+    dut.ui_in.value = 0
+    await Timer(2, unit="ns")
 
-    dut._log.info("Test project behavior")
+    # First four vectors appear at the beginning of the waveform.
+    for a, b in ((0, 0), (0, 1), (1, 0), (1, 1)):
+        ui = a | (b << 1)
+        dut.ui_in.value = ui
+        await Timer(5, unit="ns")
+        y = int(dut.uo_out.value) & 1
+        expected = a & b
+        assert y == expected, f"Truth table failed: A={a}, B={b}, Y={y}"
+        dut._log.info("A=%d B=%d Y=%d -- PASS", a, b, y)
 
-    # Set the input values you want to test
-    dut.ui_in.value = 20
-    dut.uio_in.value = 30
+    # Also verify unused ui_in bits and uio_in do not alter the output.
+    for ui in range(256):
+        dut.ui_in.value = ui
+        dut.uio_in.value = ui ^ 0xA5
+        await Timer(5, unit="ns")
+        expected = (ui & 1) & ((ui >> 1) & 1)
+        got = int(dut.uo_out.value)
+        assert got == expected, f"ui=0x{ui:02X}: got {got}, expected {expected}"
+        assert int(dut.uio_out.value) == 0, "Unused bidirectional outputs not tied low"
+        assert int(dut.uio_oe.value) == 0, "Bidirectional pins must be configured as inputs"
 
-    # Wait for one clock cycle to see the output values
-    await ClockCycles(dut.clk, 1)
-
-    # The following assersion is just an example of how to check the output values.
-    # Change it to match the actual expected output of your module:
-    assert dut.uo_out.value == 50
-
-    # Keep testing the module by changing the input values, waiting for
-    # one or more clock cycles, and asserting the expected output values.
+    dut._log.info("PASS: four truth-table cases and all 256 ui_in values")

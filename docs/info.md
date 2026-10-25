@@ -1,20 +1,22 @@
-<!---
-
-This file is used to generate your project datasheet. Please fill in the information below and delete any unused
-sections.
-
-You can also include images in this folder and reference them in the markdown. Each image must be less than
-512 kb in size, and the combined size of all images must be less than 1 MB.
--->
+# AND Gate Demo
 
 ## How it works
 
-Explain how your project works
+This project implements a two-input, one-output combinational AND gate using SKY130 standard-cell ASIC implementation. Input A is `ui_in[0]`, input B is `ui_in[1]`, and output Y is `uo_out[0]`. Y is `A & B`. The seven other dedicated output bits and all bidirectional output/enable bits are tied to 0. No clock or reset is needed.
+
+Truth table:
+
+| A | B | Y |
+|---|---|---|
+| 0 | 0 | 0 |
+| 0 | 1 | 0 |
+| 1 | 0 | 0 |
+| 1 | 1 | 1 |
 
 ## How to test
 
-Explain how to use your project
+Drive A and B using `ui_in[0]` and `ui_in[1]`, and read Y at `uo_out[0]`. For RTL simulation, the repository's Cocotb test first exercises all four truth-table combinations, then loops over all 256 values of the dedicated input bus while changing the unused bidirectional inputs. The same test should be executed on the post-synthesis/physical-design gate-level netlist using the template's `gl_test` action.
 
 ## External hardware
 
-List external hardware used in your project (e.g. PMOD, LED display, etc), if any
+None. The project is an ASIC flow teaching demo and does not require fabrication or physical hardware testing.
