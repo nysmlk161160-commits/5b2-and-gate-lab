@@ -1,15 +1,13 @@
 # Tiny Tapeout SKY130 project metadata. Demo only; edit author and unique top_module before a real submission.
 project:
-  title: "5B2 Lab 0 - AND Gate"
-  author: "Student" # Change to your name
-  discord: ""
-  description: "A two-input combinational AND gate implemented with SKY130 standard cells"
-  language: "Verilog"
-  clock_hz: 0
+  title: "32-bit ALU ASIC PPA Baseline"
+  language: "SystemVerilog"
+  clock_hz: 50000000
   tiles: "1x1"
-  top_module: "tt_um_and_demo"
+  top_module: "tt_um_pengfei_alu32"
   source_files:
     - "project.v"
+    - "alu.sv"
 pinout:
   ui[0]: "Input A"
   ui[1]: "Input B"
