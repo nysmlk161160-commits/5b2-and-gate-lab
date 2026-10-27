@@ -1,7 +1,7 @@
 `default_nettype none
 `timescale 1ns / 1ps
+// Tiny Tapeout standard Cocotb harness: keep this as test/tb.v.
 module tb ();
-    // Keep waveform dumping aligned with official template: test/tb.fst.
     initial begin
         $dumpfile("tb.fst");
         $dumpvars(0, tb);
@@ -22,19 +22,14 @@ module tb ();
     wire VGND = 1'b0;
 `endif
 
-    tt_um_and_demo user_project (
+    tt_um_pengfei_alu32 user_project (
 `ifdef GL_TEST
         .VPWR(VPWR),
         .VGND(VGND),
 `endif
-        .ui_in(ui_in),
-        .uo_out(uo_out),
-        .uio_in(uio_in),
-        .uio_out(uio_out),
-        .uio_oe(uio_oe),
-        .ena(ena),
-        .clk(clk),
-        .rst_n(rst_n)
+        .ui_in(ui_in), .uo_out(uo_out),
+        .uio_in(uio_in), .uio_out(uio_out), .uio_oe(uio_oe),
+        .ena(ena), .clk(clk), .rst_n(rst_n)
     );
 endmodule
 `default_nettype wire
