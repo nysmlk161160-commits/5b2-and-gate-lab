@@ -1,6 +1,8 @@
 # Tiny Tapeout SKY130 project metadata. Demo only; edit author and unique top_module before a real submission.
 project:
   title: "32-bit ALU ASIC PPA Baseline"
+  author: "Pengfei Chen"
+  description: "A 32-bit ALU supporting arithmetic, logic, shift and comparison operations, implemented in SKY130."
   language: "SystemVerilog"
   clock_hz: 50000000
   tiles: "1x1"
